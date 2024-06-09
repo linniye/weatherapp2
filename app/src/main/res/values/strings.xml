@@ -1,9 +1,7 @@
 <resources>
-    <string name="app_name">weatherapp</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard"></string>
-    <string name="title_notifications">Notifications</string>
+    <string name="app_name">CO2 Монитор</string>
     <string name="Влажность">Влажность</string>
     <string name="CO2">СO2</string>
     <string name="Температура">Температура</string>
+    <string name="Arg">Средние значения за день:</string>
 </resources>

@@ -47,4 +47,32 @@
     <item name="devices_list_view" type="id" />
     <item name="viewview" type="id" />
     <item name="disconnect" type="id" />
+    <item name="fragment_weather" type="id" />
+    <item name="mainContainer" type="id" />
+    <item name="addressContainer" type="id" />
+    <item name="address" type="id" />
+    <item name="updated_at" type="id" />
+    <item name="overviewContainer" type="id" />
+    <item name="status" type="id" />
+    <item name="temp" type="id" />
+    <item name="temp_min" type="id" />
+    <item name="temp_max" type="id" />
+    <item name="detailsContainer" type="id" />
+    <item name="sunrise" type="id" />
+    <item name="sunset" type="id" />
+    <item name="wind" type="id" />
+    <item name="pressure" type="id" />
+    <item name="humidity" type="id" />
+    <item name="about" type="id" />
+    <item name="loader" type="id" />
+    <item name="errorText" type="id" />
+    <item name="imageButton2" type="id" />
+    <item name="fragment_monitor" type="id" />
+    <item name="timeTextView" type="id" />
+    <item name="temperatureTextView" type="id" />
+    <item name="humidityTextView" type="id" />
+    <item name="co2TextView" type="id" />
+    <item name="textarg" type="id" />
+    <item name="seachDevices" type="id" />
+    <item name="connectToDevice" type="id" />
 </resources>

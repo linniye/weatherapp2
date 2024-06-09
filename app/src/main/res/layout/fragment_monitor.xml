@@ -2,10 +2,10 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/fragment_monitor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Monitor">
+    tools:context=".ui.Monitor.MonitorFragment">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -14,25 +14,40 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/Theme.DHT11Bluetooth.AppBarOverlay"
-            android:background="@color/teal_200"
-            app:elevation="0.0dip">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:background="@color/teal_200">
+
+
             <ImageButton
                 android:id="@+id/imageButton2"
                 android:layout_width="30.0dip"
                 android:layout_height="30.0dip"
+                android:layout_marginStart="300dp"
+                android:layout_marginTop="4dp"
                 android:background="@color/teal_200"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="350dp"
-                android:layout_marginRight="0dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/sett" />
-        </com.google.android.material.appbar.AppBarLayout>
+                android:src="@drawable/sett"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <RelativeLayout
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="30.0dip"
+                android:layout_height="30.0dip"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/teal_200"
+                android:scaleType="fitCenter"
+                android:src="@drawable/weather"
+                app:layout_constraintStart_toEndOf="@id/imageButton2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffe8e8e8"
@@ -42,7 +57,7 @@
                     android:id="@id/relao"
                     android:layout_width="fill_parent"
                     android:layout_height="140.0dip"
-                    android:background="@drawable/custom_background"
+                    android:background="@drawable/back2"
                     android:gravity="center_horizontal">
 
                     <RelativeLayout
@@ -90,7 +105,7 @@
                             android:layout_marginStart="10.0dip"
                             android:layout_toEndOf="@id/noo"
                             android:orientation="vertical"
-                            android:text=""
+                            android:text="12.05.2024 18:15 "
                             android:textAlignment="textStart"
                             android:textColor="#ffffffff"
                             android:textSize="13.0sp"
@@ -142,7 +157,7 @@
                             android:layout_marginStart="10.0dip"
                             android:layout_toEndOf="@id/noo2"
                             android:orientation="vertical"
-                            android:text=""
+                            android:text="Подключено"
                             android:textAlignment="textStart"
                             android:textColor="#ffffffff"
                             android:textSize="13.0sp"
@@ -307,14 +322,14 @@
                                     app:arc_bottom_text=""
                                     app:arc_bottom_text_size="12.0dip"
                                     app:arc_finished_color="#ff3f51b5"
-                                    app:arc_max="100"
+                                    app:arc_max="2000"
                                     app:arc_progress="0"
                                     app:arc_stroke_width="12.0dip"
                                     app:arc_suffix_text="PPM"
                                     app:arc_suffix_text_padding="5.0dip"
                                     app:arc_suffix_text_size="11.0dip"
                                     app:arc_text_color="#ff000000"
-                                    app:arc_text_size="36.0dip"
+                                    app:arc_text_size="20.0dip"
                                     app:arc_unfinished_color="#ffdddddd" />
                             </RelativeLayout>
                         </androidx.cardview.widget.CardView>
@@ -338,12 +353,24 @@
                     android:layout_marginTop="20.0dip"
                     android:layout_marginBottom="20.0dip"
                     android:orientation="vertical">
+                    <TextView
+                        android:id="@id/textarg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/image1"
+                        android:adjustViewBounds="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/Arg"
+                        android:textColor="#ff000000"
+                        android:textSize="18.0sp"
+                        android:layout_marginStart="66.0dip"/>
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="#ffffffff"
-                        android:padding="10.0dip">
+                        android:padding="15.0dip">
 
                         <ImageView
                             android:id="@id/image1"
@@ -474,50 +501,6 @@
                 android:layout_marginStart="10.0dip"
                 android:layout_marginTop="20.0dip"
                 android:layout_marginEnd="10.0dip"
-                app:cardBackgroundColor="#ffffffff"
-                app:cardCornerRadius="12.0dip"
-                app:cardElevation="8.0dip">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:background="#ffffffff">
-
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@id/brain_chart"
-                        android:layout_width="fill_parent"
-                        android:layout_height="300.0dip" />
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10.0dip"
-                android:layout_marginTop="20.0dip"
-                android:layout_marginEnd="10.0dip"
-                android:layout_marginBottom="20.0dip"
-                app:cardBackgroundColor="#ffffffff"
-                app:cardCornerRadius="12.0dip"
-                app:cardElevation="8.0dip">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:background="#ffffffff">
-
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@id/brain_chart2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="300.0dip" />
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10.0dip"
-                android:layout_marginTop="20.0dip"
-                android:layout_marginEnd="10.0dip"
                 android:layout_marginBottom="20.0dip"
                 app:cardBackgroundColor="#ffffffff"
                 app:cardCornerRadius="12.0dip"
@@ -557,7 +540,7 @@
                         <TextView
                             android:id="@id/mT1"
                             android:layout_width="120.0dip"
-                            android:layout_height="20.0dip"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3.0"
                             android:text="Время"
                             android:textAlignment="center"
@@ -568,7 +551,7 @@
                         <TextView
                             android:id="@id/mT2"
                             android:layout_width="120.0dip"
-                            android:layout_height="20.0dip"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3.0"
                             android:text="Температура"
                             android:textAlignment="center"
@@ -579,7 +562,7 @@
                         <TextView
                             android:id="@id/mT3"
                             android:layout_width="120.0dip"
-                            android:layout_height="20.0dip"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3.0"
                             android:text="Влажность"
                             android:textAlignment="center"
@@ -590,7 +573,7 @@
                         <TextView
                             android:id="@id/mT4"
                             android:layout_width="120.0dip"
-                            android:layout_height="20.0dip"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3.0"
                             android:text="CO2"
                             android:textAlignment="center"
@@ -599,7 +582,6 @@
                             android:textStyle="bold" />
                     </TableRow>
                 </TableLayout>
-
                 <ListView
                     android:id="@id/listviewdata"
                     android:layout_width="fill_parent"
