@@ -51,7 +51,6 @@ public class MonitorFragment extends Fragment {
     private ImageButton imageButton2;
     private ImageButton imageButton3;
     public static Handler handler;
-    private GaugeView gauge1, gauge2, gauge3;
     private final static int ERROR_READ = 0; // used in bluetooth handler to identify message update
     int[] time = {9, 11, 13, 14, 15, 17, 18}; // Пример данных time
     public interface OnSettingsClickListener {
@@ -74,15 +73,22 @@ public class MonitorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_monitor, container, false);
-        gauge1 = view.findViewById(R.id.gauge1);
-        gauge2 = view.findViewById(R.id.gauge2);
-        gauge3 = view.findViewById(R.id.gauge3);
+        View gauge1 = view.findViewById(R.id.gauge1);
+        View gauge2 = view.findViewById(R.id.gauge2);
+        View gauge3 = view.findViewById(R.id.gauge3);
         LineChart lineChart = view.findViewById(R.id.brain_chart3);
         imageButton2 = view.findViewById(R.id.imageButton2);
         imageButton3 = view.findViewById(R.id.imageButton3);
-        DataAdapter adapter = new DataAdapter(getActivity(), temperatures, humidities, ppm, time);
-        ListView listView = view.findViewById(R.id.listviewdata);
-        listView.setAdapter(adapter);// Имя Вашей кнопки-иконки
+
+        Bundle args = getArguments();
+        if (args != null) {
+            float humidity = args.getFloat("humidity", 0.0f);
+            float temperature = args.getFloat("temperature", 0.0f);
+            float ppm = args.getFloat("ppm", 0.0f);
+
+            // Используйте данные для обновления gauge1, gauge2, gauge3 и создания LineChart
+        }
+
         imageButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,60 +105,40 @@ public class MonitorFragment extends Fragment {
         });
         //Using a handler to update the interface in case of an error connecting to the BT device
         //My idea is to show handler vs RxAndroid
-        handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-
-                    case ERROR_READ:
-                        String arduinoMsg = msg.obj.toString(); // Read message from Arduino
-                        ArcProgress arcProgress1 = view.findViewById(R.id.gauge1); // Получаем ссылку на первый виджет ArcProgress
-                        gauge1.setText(arduinoMsg);
-                        break;
-                }
-            }
-        };
-//        connectToDevice.setOnClickListener(new View.OnClickListener() {
+//        handler = new Handler(Looper.getMainLooper()) {
 //            @Override
-//            public void onClick(View view) {
-//                btReadings.setText("");
-//                if (arduinoBTModule != null) {
-//                    //We subscribe to the observable until the onComplete() is called
-//                    //We also define control the thread management with
-//                    // subscribeOn:  the thread in which you want to execute the action
-//                    // observeOn: the thread in which you want to get the response
-//                    connectToBTObservable.
-//                            observeOn(AndroidSchedulers.mainThread()).
-//                            subscribeOn(Schedulers.io()).
-//                            subscribe(valueRead -> {
-//                                //valueRead returned by the onNext() from the Observable
-//                                btReadings.setText(valueRead);
-//                                //We just scratched the surface with RxAndroid
-//                            });
+//            public void handleMessage(Message msg) {
+//                switch (msg.what) {
 //
+//                    case ERROR_READ:
+//                        String arduinoMsg = msg.obj.toString(); // Read message from Arduino
+//                        ArcProgress arcProgress1 = view.findViewById(R.id.gauge1); // Получаем ссылку на первый виджет ArcProgress
+//                        gauge1.setText(arduinoMsg);
+//                        break;
 //                }
 //            }
-//        });
-        @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-
-            Bundle args = getArguments();
-            if (args != null) {
-                float humidity = args.getFloat("humidity");
-                float temperature = args.getFloat("temperature");
-                float ppm = args.getFloat("ppm");
-
-                gauge1.setValue(humidity);
-                gauge2.setValue(temperature);
-                gauge3.setValue(ppm);
-            }
-        }
+//        };
 //
-            ArcProgress arcProgress2 = view.findViewById(R.id.gauge2); // Получаем ссылку на второй виджет ArcProgress
-            arcProgress2.setProgress(30); // Устанавливаем значение 75 для второго виджета ArcProgress
-            ArcProgress arcProgress3 = view.findViewById(R.id.gauge3); // Получаем ссылку на второй виджет ArcProgress
-            arcProgress3.setProgress(414); // Устанавливаем значение 75 для второго виджета ArcProgress
+//        @Override
+//        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//            super.onViewCreated(view, savedInstanceState);
+//
+//            Bundle args = getArguments();
+//            if (args != null) {
+//                float humidity = args.getFloat("humidity");
+//                float temperature = args.getFloat("temperature");
+//                float ppm = args.getFloat("ppm");
+//
+//                gauge1.setValue(humidity);
+//                gauge2.setValue(temperature);
+//                gauge3.setValue(ppm);
+//            }
+//        }
+//////
+//            ArcProgress arcProgress2 = view.findViewById(R.id.gauge2); // Получаем ссылку на второй виджет ArcProgress
+//            arcProgress2.setProgress(30); // Устанавливаем значение 75 для второго виджета ArcProgress
+//            ArcProgress arcProgress3 = view.findViewById(R.id.gauge3); // Получаем ссылку на второй виджет ArcProgress
+//            arcProgress3.setProgress(414); // Устанавливаем значение 75 для второго виджета ArcProgress
 
         // Настройка LineChart
         lineChart.setTouchEnabled(true);
@@ -194,41 +180,41 @@ public class MonitorFragment extends Fragment {
         List<Entry> humidityEntries = new ArrayList<>();
         List<Entry> ppmEntries = new ArrayList<>();
 
-        for (int i = 0; i < time.length; i++) {
-            temperatureEntries.add(new Entry(time[i], temperatures[i]));
-            humidityEntries.add(new Entry(time[i], humidities[i]));
-            ppmEntries.add(new Entry(time[i], ppm[i]));
-        }
-
-        temperatureDataSet.setValues(temperatureEntries);
-        humidityDataSet.setValues(humidityEntries);
-        ppmDataSet.setValues(ppmEntries);
-
-        LineData lineData = new LineData(temperatureDataSet, humidityDataSet, ppmDataSet);
-        lineChart.setData(lineData); // Установка LineData для LineChart
-        lineChart.notifyDataSetChanged();
-        lineChart.invalidate();
-        int sum = 0;
-        for (int temperature : temperatures) {
-            sum += temperature;
-        }
-        double averageTemperature = (double) sum / temperatures.length;
-        TextView sensor1 = view.findViewById(R.id.sensor1);
-        sensor1.setText(String.format("%.0f °C", averageTemperature));
-
-        int sumhum = 0;
-        for (int humidity : humidities) {
-            sumhum += humidity;
-        } double averageHumidity = (double) sumhum / humidities.length;
-        TextView sensor2 = view.findViewById(R.id.sensor2);
-        sensor2.setText(String.format("%.0f" + "%%", averageHumidity));
-
-        int sumppm = 0;
-        for (int ppms : ppm) {
-            sumppm += ppms;
-        } double averagePpm = (double) sumppm / ppm.length;
-        TextView sensor3 = view.findViewById(R.id.sensor3);
-        sensor3.setText(String.format("%.0f PPM", averagePpm));
+//        for (int i = 0; i < time.length; i++) {
+//            temperatureEntries.add(new Entry(time[i], temperatures[i]));
+//            humidityEntries.add(new Entry(time[i], humidities[i]));
+//            ppmEntries.add(new Entry(time[i], ppm[i]));
+//        }
+//
+//        temperatureDataSet.setValues(temperatureEntries);
+//        humidityDataSet.setValues(humidityEntries);
+//        ppmDataSet.setValues(ppmEntries);
+//
+//        LineData lineData = new LineData(temperatureDataSet, humidityDataSet, ppmDataSet);
+//        lineChart.setData(lineData); // Установка LineData для LineChart
+//        lineChart.notifyDataSetChanged();
+//        lineChart.invalidate();
+//        int sum = 0;
+//        for (int temperature : temperatures) {
+//            sum += temperature;
+//        }
+//        double averageTemperature = (double) sum / temperatures.length;
+//        TextView sensor1 = view.findViewById(R.id.sensor1);
+//        sensor1.setText(String.format("%.0f °C", averageTemperature));
+//
+//        int sumhum = 0;
+//        for (int humidity : humidities) {
+//            sumhum += humidity;
+//        } double averageHumidity = (double) sumhum / humidities.length;
+//        TextView sensor2 = view.findViewById(R.id.sensor2);
+//        sensor2.setText(String.format("%.0f" + "%%", averageHumidity));
+//
+//        int sumppm = 0;
+//        for (int ppms : ppm) {
+//            sumppm += ppms;
+//        } double averagePpm = (double) sumppm / ppm.length;
+//        TextView sensor3 = view.findViewById(R.id.sensor3);
+//        sensor3.setText(String.format("%.0f PPM", averagePpm));
 
         return view;
 

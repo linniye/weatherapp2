@@ -12,6 +12,7 @@ import org.json.JSONObject
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class Weather : AppCompatActivity() {
 
@@ -57,15 +58,16 @@ class Weather : AppCompatActivity() {
 
                 val updatedAt:Long = jsonObj.getLong("dt")
                 val updatedAtText = "Обновлено в: "+ SimpleDateFormat("dd/MM/yyyy hh:mm ",Locale("ru")).format(Date(updatedAt*1000))
-                val temp = main.getString("temp")+"°C"
-                val tempMin = "Минимально: " + main.getString("temp_min")+"°C"
-                val tempMax = "Максимально:" + main.getString("temp_max")+"°C"
-                val pressure = main.getString("pressure")
-                val humidity = main.getString("humidity")
+                val temp = main.getString("temp").toFloat().roundToInt().toString() + "°C"
+                val tempMin = "Минимально: " + main.getString("temp_min").toFloat().roundToInt().toString() + "°C"
+                val tempMax = "Максимально:" + main.getString("temp_max").toFloat().roundToInt().toString() + "°C"
+                val pressure = main.getString("pressure").toFloat().roundToInt().toString() + " мм рт.ст."
+                val humidity = main.getString("humidity").toFloat().roundToInt().toString() + " %"
+
 
                 val sunrise:Long = sys.getLong("sunrise")
                 val sunset:Long = sys.getLong("sunset")
-                val windSpeed = wind.getString("speed")
+                val windSpeed = wind.getString("speed") + " м/с"
                 val weatherDescription = weather.getString("description")
 
                 val lang = "ru"
@@ -84,8 +86,8 @@ class Weather : AppCompatActivity() {
                 findViewById<TextView>(R.id.sunrise).text = SimpleDateFormat("hh:mm a", Locale("ru")).format(Date(sunrise*1000))
                 findViewById<TextView>(R.id.sunset).text = SimpleDateFormat("hh:mm a", Locale("ru")).format(Date(sunset*1000))
                 findViewById<TextView>(R.id.wind).text = "$windSpeed м/с"
-                findViewById<TextView>(R.id.pressure).text = pressure
-                findViewById<TextView>(R.id.humidity).text = humidity
+                findViewById<TextView>(R.id.pressure).text = "$pressure  мм рт.ст."
+                findViewById<TextView>(R.id.humidity).text = "$humidity %"
 
                 /* Views populated, Hiding the loader, Showing the main design */
                 findViewById<ProgressBar>(R.id.loader).visibility = View.GONE

@@ -199,21 +199,21 @@ public class Settings extends AppCompatActivity {
                                     Log.d(TAG, "HC-05 found");
                                     arduinoUUID = device.getUuids()[0].getUuid();
                                     arduinoBTModule = device;
-                                    //HC -05 Found, enabling the button to read results
-                                    connectToDevice.setEnabled(true);
-                                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                                    MonitorFragment monitorFragment = new MonitorFragment();
-                                    monitorFragment.setArguments(args);
 
-                                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                                    transaction.replace(R.id.fragment_monitor, monitorFragment);
-                                    transaction.commit();
+                                    connectToDevice.setEnabled(true);
+
                                     Bundle args = new Bundle();
                                     args.putFloat("humidity", humidity);
                                     args.putFloat("temperature", temperature);
                                     args.putFloat("ppm", ppm);
 
+                                    MonitorFragment monitorFragment = new MonitorFragment();
+                                    monitorFragment.setArguments(args);
 
+                                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.fragment_monitor, monitorFragment);
+                                    transaction.addToBackStack(null);  // Добавляем транзакцию в стек для возможности возврата
+                                    transaction.commit();
                                 }
                                 btDevices.setText(btDevicesString);
                             }
