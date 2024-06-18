@@ -518,6 +518,29 @@
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10.0dip"
+            android:layout_marginTop="20.0dip"
+            android:layout_marginEnd="10.0dip"
+            android:layout_marginBottom="20.0dip"
+            app:cardBackgroundColor="#ffffffff"
+            app:cardCornerRadius="12.0dip"
+            app:cardElevation="8.0dip">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:background="#ffffffff">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@id/brain_chart4"
+                    android:layout_width="fill_parent"
+                    android:layout_height="300.0dip" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="fill_parent"
                 android:layout_height="350.0dip"

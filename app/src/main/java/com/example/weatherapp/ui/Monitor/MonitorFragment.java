@@ -77,6 +77,7 @@ public class MonitorFragment extends Fragment {
         View gauge2 = view.findViewById(R.id.gauge2);
         View gauge3 = view.findViewById(R.id.gauge3);
         LineChart lineChart = view.findViewById(R.id.brain_chart3);
+        LineChart lineChart2 = view.findViewById(R.id.brain_chart4);
         imageButton2 = view.findViewById(R.id.imageButton2);
         imageButton3 = view.findViewById(R.id.imageButton3);
 
@@ -149,6 +150,28 @@ public class MonitorFragment extends Fragment {
         lineChart.getDescription().setText("");
         lineChart.setExtraOffsets(10f, 20f, 10f, 20f);
 
+// Создание LineDataSet для PPM
+        LineDataSet ppmDataSet = new LineDataSet(null, "PPM");
+        ppmDataSet.setColor(Color.BLUE);
+        ppmDataSet.setCircleColor(Color.BLUE);
+        ppmDataSet.setLineWidth(2f);
+        ppmDataSet.setCircleRadius(4f);
+        ppmDataSet.setValueTextColor(Color.BLUE);
+        ppmDataSet.setValueTextSize(10f);
+
+        List<Entry> temperatureEntries = new ArrayList<>();
+        List<Entry> humidityEntries = new ArrayList<>();
+        List<Entry> ppmEntries = new ArrayList<>();
+
+        // Настройка LineChart
+        lineChart2.setTouchEnabled(true);
+        lineChart2.setDragEnabled(true);
+        lineChart2.setScaleEnabled(true);
+        lineChart2.setPinchZoom(false);
+        lineChart2.setDrawGridBackground(false);
+        lineChart2.getDescription().setText("");
+        lineChart2.setExtraOffsets(10f, 20f, 10f, 20f);
+
 // Создание LineDataSet для температуры
         LineDataSet temperatureDataSet = new LineDataSet(null, "Температура");
         temperatureDataSet.setColor(Color.RED);
@@ -167,33 +190,20 @@ public class MonitorFragment extends Fragment {
         humidityDataSet.setValueTextColor(Color.BLACK);
         humidityDataSet.setValueTextSize(10f);
 
-// Создание LineDataSet для PPM
-        LineDataSet ppmDataSet = new LineDataSet(null, "PPM");
-        ppmDataSet.setColor(Color.BLUE);
-        ppmDataSet.setCircleColor(Color.BLUE);
-        ppmDataSet.setLineWidth(2f);
-        ppmDataSet.setCircleRadius(4f);
-        ppmDataSet.setValueTextColor(Color.BLUE);
-        ppmDataSet.setValueTextSize(10f);
+        for (int i = 0; i < time.length; i++) {
+            temperatureEntries.add(new Entry(time[i], temperatures[i]));
+            humidityEntries.add(new Entry(time[i], humidities[i]));
+            ppmEntries.add(new Entry(time[i], ppm[i]));
+        }
 
-        List<Entry> temperatureEntries = new ArrayList<>();
-        List<Entry> humidityEntries = new ArrayList<>();
-        List<Entry> ppmEntries = new ArrayList<>();
+        temperatureDataSet.setValues(temperatureEntries);
+        humidityDataSet.setValues(humidityEntries);
+        ppmDataSet.setValues(ppmEntries);
 
-//        for (int i = 0; i < time.length; i++) {
-//            temperatureEntries.add(new Entry(time[i], temperatures[i]));
-//            humidityEntries.add(new Entry(time[i], humidities[i]));
-//            ppmEntries.add(new Entry(time[i], ppm[i]));
-//        }
-//
-//        temperatureDataSet.setValues(temperatureEntries);
-//        humidityDataSet.setValues(humidityEntries);
-//        ppmDataSet.setValues(ppmEntries);
-//
-//        LineData lineData = new LineData(temperatureDataSet, humidityDataSet, ppmDataSet);
-//        lineChart.setData(lineData); // Установка LineData для LineChart
-//        lineChart.notifyDataSetChanged();
-//        lineChart.invalidate();
+        LineData lineData = new LineData(temperatureDataSet, humidityDataSet, ppmDataSet);
+        lineChart.setData(lineData); // Установка LineData для LineChart
+        lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
 //        int sum = 0;
 //        for (int temperature : temperatures) {
 //            sum += temperature;

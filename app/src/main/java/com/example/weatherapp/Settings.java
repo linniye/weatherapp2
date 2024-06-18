@@ -40,7 +40,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class Settings extends AppCompatActivity {
     // Global variables we will use in the
-    private static final String TAG = "FrugalLogs";
+    private static final String TAG = "linniye";
     private static final int REQUEST_ENABLE_BT = 1;
     //We will use a Handler to get the BT Connection statys
     public static Handler handler;
@@ -202,10 +202,10 @@ public class Settings extends AppCompatActivity {
 
                                     connectToDevice.setEnabled(true);
 
-                                    Bundle args = new Bundle();
-                                    args.putFloat("humidity", humidity);
-                                    args.putFloat("temperature", temperature);
-                                    args.putFloat("ppm", ppm);
+//                                    Bundle args = new Bundle();
+//                                    args.putFloat("humidity", humidity);
+//                                    args.putFloat("temperature", temperature);
+//                                    args.putFloat("ppm", ppm);
 
                                     MonitorFragment monitorFragment = new MonitorFragment();
                                     monitorFragment.setArguments(args);

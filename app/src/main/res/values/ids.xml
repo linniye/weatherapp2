@@ -75,4 +75,5 @@
     <item name="textarg" type="id" />
     <item name="seachDevices" type="id" />
     <item name="connectToDevice" type="id" />
+    <item name="brain_chart4" type="id" />
 </resources>
