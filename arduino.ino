@@ -3,19 +3,19 @@
 #include <Wire.h>
 #include <SoftwareSerial.h>
 #include <MQ135.h>
-
-#define DHTPIN 5
-#define DHTTYPE DHT11
-#define BUZZER 4
-#define CACHE_SIZE 10
+#include <math.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  // Устанавливаем дисплей
+#define DHTPIN 5
+#define DHTTYPE DHT11
+#define CACHE_SIZE 5
 DHT dht(DHTPIN, DHTTYPE);
 MQ135 gasSensor(A3);
-SoftwareSerial BTSerial(10, 11);
-
+int buzzer = 4;
+unsigned long previousMillis = 0;
 const long interval = 5000;
 bool isHumidityDisplayed = false;
+SoftwareSerial BTSerial(10, 11);
 
 float prevTemp, prevHum, prevGasPPM;
 
@@ -37,62 +37,63 @@ void loop() {
     float temp = dht.readTemperature();
     float hum = dht.readHumidity();
     int gasValue = gasSensor.getPPM();
+    unsigned long currentMillis = millis();
 
     if (isnan(temp)) {
         temp = prevTemp;
-        displayInformation(0, 0, concat("Temp: ", temp, "C"));
-
-        BTSerial.print("Temperature: ");
-        BTSerial.print(temp);
-        BTSerial.println(" C");
+        displayInformation(0, 0, concat("Temp: ", temp, "C"), true);
     } else {
         if (temp != prevTemp) {
             prevTemp = temp;
-            displayInformation(0, 0, concat("Temp: ", temp, "C"));
+            displayInformation(0, 0, concat("Temp: ", temp, "C"), true);
         }
     }
-
-    if (isHumidityDisplayed) {
-        if (isnan(hum)) {
-            hum = prevHum;
-            displayInformation(0, 2, concat("Humidity: ", hum - 10, "%"));
-            isHumidityDisplayed = false;
-        } else {
-            if (hum != prevHum) {
-                prevHum = hum;
-                displayInformation(0, 1, concat("Humidity: ", hum - 10, "%"));
+    if (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis;
+        if (isHumidityDisplayed) {
+            if (isnan(hum)) {
+                hum = prevHum;
+                displayInformation(0, 2, concat("Humidity: ", hum - 10, "%"), false);
                 isHumidityDisplayed = false;
+            } else {
+                if (hum != prevHum) {
+                    prevHum = hum;
+                    displayInformation(0, 1, concat("Humidity: ", hum - 10, "%"), false);
+                    isHumidityDisplayed = false;
+                }
+            }}else {
+            if (gasValue > 100 && gasValue != prevGasPPM) {
+                prevGasPPM = gasValue;
+                displayInformation(0, 1, concat("CO2: ", prevGasPPM + 300, "ppm"), false);
+                isHumidityDisplayed = true;
             }
-        }
-    } else {
-        if (gasValue > 100 && gasValue != prevGasPPM) {
-            prevGasPPM = gasValue;
-            displayInformation(0, 1, concat("CO2: ", prevGasPPM + 300, "ppm"));
-            isHumidityDisplayed = true;
-        }
-        if (prevGasPPM + 300 > 100) {
-            tone(BUZZER, 100);
-            delay(500);
-            noTone(BUZZER);
-            isHumidityDisplayed = true;
-        }
+            if (prevGasPPM + 300 > 100) {
+                tone(buzzer, 100);
+                delay(500);
+                noTone(buzzer);
+                isHumidityDisplayed = true;
+            }
 
-        Serial.println(concat("Temperature: ", temp, " C"));
-        Serial.println(concat("Humidity: ", hum, " %"));
-        Serial.println(concat("Gas Level: ", gasValue, " PPM"));
+            Serial.println(concat("Temperature: ", temp, " C"));
+            Serial.println(concat("Humidity: ", hum, " %"));
+            Serial.println(concat("Gas Level: ", gasValue, " PPM"));
+
+            String currentResult = getCurrentOutput(temp, hum, gasValue);
+            updateCache(currentResult);
+            Serial.println(currentResult);
+            BTSerial.println(getOverallOutput());
+            Serial.println(getOverallOutput());
+
+            delay(interval);  // Задержка между чтениями
+        }
     }
-
-    String currentResult = getCurrentOutput(temp, hum, gasValue);
-    updateCache(currentResult);
-    Serial.println(currentResult);
-    BTSerial.println(getOverallOutput());
-
-    delay(interval);  // Задержка между чтениями
 }
 
 // Отображение какого-либо контента на LCD
-void displayInformation(int offsetX, int offsetY, String content) {
-    lcd.clear();
+void displayInformation(int offsetX, int offsetY, String content, bool clear) {
+    if (clear) {
+        lcd.clear();
+    }
     lcd.setCursor(offsetX, offsetY);
     lcd.print(content);
 }
@@ -105,7 +106,7 @@ String getCurrentOutput(float temperature, float humidity, int gasValue) {
 // Получает общий вывод по кешу, разделяя его ","
 String getOverallOutput() {
     String cacheDump = "";
-    for (int i = 0; i < sizeof(outputCache); i++) {
+    for (int i = 0; i < CACHE_SIZE; i++) {
         cacheDump = concat(cacheDump, outputCache[i], ",");
     }
     return cacheDump;
@@ -114,7 +115,7 @@ String getOverallOutput() {
 // Обновляет кеш, постепенно избавляясь от самых старых значений
 // Добавляет новое значение в самое начало
 void updateCache(String newOutput) {
-    for (int i = sizeof(outputCache) - 2; i >= 0; i--) {
+    for (int i = CACHE_SIZE - 2; i >= 0; i--) {
         outputCache[i + 1] = outputCache[i];
     }
     outputCache[0] = newOutput;
