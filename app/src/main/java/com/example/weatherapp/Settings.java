@@ -202,17 +202,13 @@ public class Settings extends AppCompatActivity {
 
                                     connectToDevice.setEnabled(true);
 
-//                                    Bundle args = new Bundle();
-//                                    args.putFloat("humidity", humidity);
-//                                    args.putFloat("temperature", temperature);
-//                                    args.putFloat("ppm", ppm);
 
                                     MonitorFragment monitorFragment = new MonitorFragment();
-                                    monitorFragment.setArguments(args);
+
 
                                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                                     transaction.replace(R.id.fragment_monitor, monitorFragment);
-                                    transaction.addToBackStack(null);  // Добавляем транзакцию в стек для возможности возврата
+                                    transaction.addToBackStack(null);
                                     transaction.commit();
                                 }
                                 btDevices.setText(btDevicesString);

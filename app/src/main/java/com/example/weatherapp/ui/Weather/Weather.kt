@@ -85,9 +85,9 @@ class Weather : AppCompatActivity() {
                 findViewById<TextView>(R.id.temp_max).text = tempMax
                 findViewById<TextView>(R.id.sunrise).text = SimpleDateFormat("hh:mm a", Locale("ru")).format(Date(sunrise*1000))
                 findViewById<TextView>(R.id.sunset).text = SimpleDateFormat("hh:mm a", Locale("ru")).format(Date(sunset*1000))
-                findViewById<TextView>(R.id.wind).text = "$windSpeed м/с"
-                findViewById<TextView>(R.id.pressure).text = "$pressure  мм рт.ст."
-                findViewById<TextView>(R.id.humidity).text = "$humidity %"
+                findViewById<TextView>(R.id.wind).text = "$windSpeed "
+                findViewById<TextView>(R.id.pressure).text = "$pressure  "
+                findViewById<TextView>(R.id.humidity).text = "$humidity "
 
                 /* Views populated, Hiding the loader, Showing the main design */
                 findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
