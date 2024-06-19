@@ -10,17 +10,6 @@ import java.io.IOException;
 import java.util.UUID;
 
 
-
-import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.os.Handler;
-import android.util.Log;
-
-import java.io.IOException;
-import java.util.UUID;
-
-
 //Class that will open the BT Socket to the Arduino BT Module
 //Given a BT device, the UUID and a Handler to set the results
 public class ConnectThread extends Thread {
@@ -34,7 +23,7 @@ public class ConnectThread extends Thread {
         // Use a temporary object that is later assigned to mmSocket
         // because mmSocket is final.
         BluetoothSocket tmp = null;
-        this.handler=handler;
+        ConnectThread.handler = handler;
 
         try {
             // Get a BluetoothSocket to connect with the given BluetoothDevice.
@@ -79,7 +68,7 @@ public class ConnectThread extends Thread {
         }
     }
 
-    public BluetoothSocket getMmSocket(){
+    public BluetoothSocket getMmSocket() {
         return mmSocket;
     }
 }

@@ -1,36 +1,20 @@
 package com.example.weatherapp.ui.Monitor;
 
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.weatherapp.MainActivity;
 import com.example.weatherapp.R;
-import com.example.weatherapp.Settings;
 import com.example.weatherapp.ui.Weather.Weather;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.github.mikephil.charting.charts.LineChart;
@@ -38,13 +22,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class MonitorFragment extends Fragment {
 
@@ -60,6 +39,7 @@ public class MonitorFragment extends Fragment {
     public interface OnSettingsClickListener {
         void onSettingsClick();
     }
+
     private OnSettingsClickListener mListener;
 
     @Override
@@ -102,9 +82,9 @@ public class MonitorFragment extends Fragment {
         ArcProgress arcProgress1 = view.findViewById(R.id.gauge1); // Получаем ссылку на второй виджет ArcProgress
         arcProgress1.setProgress(30);
         ArcProgress arcProgress2 = view.findViewById(R.id.gauge2); // Получаем ссылку на второй виджет ArcProgress
-            arcProgress2.setProgress(30); // Устанавливаем значение 75 для второго виджета ArcProgress
-            ArcProgress arcProgress3 = view.findViewById(R.id.gauge3); // Получаем ссылку на второй виджет ArcProgress
-            arcProgress3.setProgress(414); // Устанавливаем значение 75 для второго виджета ArcProgress
+        arcProgress2.setProgress(30); // Устанавливаем значение 75 для второго виджета ArcProgress
+        ArcProgress arcProgress3 = view.findViewById(R.id.gauge3); // Получаем ссылку на второй виджет ArcProgress
+        arcProgress3.setProgress(414); // Устанавливаем значение 75 для второго виджета ArcProgress
 
         // Настройка lineChart
         lineChart.setTouchEnabled(true);
@@ -187,14 +167,16 @@ public class MonitorFragment extends Fragment {
         int sumhum = 0;
         for (int humidity : humidities) {
             sumhum += humidity;
-        } double averageHumidity = (double) sumhum / humidities.length;
+        }
+        double averageHumidity = (double) sumhum / humidities.length;
         TextView sensor2 = view.findViewById(R.id.sensor2);
         sensor2.setText(String.format("%.0f" + "%%", averageHumidity));
 
         int sumppm = 0;
         for (int ppms : ppm) {
             sumppm += ppms;
-        } double averagePpm = (double) sumppm / ppm.length;
+        }
+        double averagePpm = (double) sumppm / ppm.length;
         TextView sensor3 = view.findViewById(R.id.sensor3);
         sensor3.setText(String.format("%.0f PPM", averagePpm));
 
@@ -202,4 +184,4 @@ public class MonitorFragment extends Fragment {
 
     }
 
-    }
+}

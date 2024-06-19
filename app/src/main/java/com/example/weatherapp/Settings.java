@@ -27,9 +27,6 @@ import com.example.weatherapp.ui.Monitor.ConnectThread;
 import com.example.weatherapp.ui.Monitor.ConnectedThread;
 import com.example.weatherapp.ui.Monitor.MonitorFragment;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;

@@ -2,7 +2,6 @@ package com.example.weatherapp.ui.Monitor;
 
 
 import android.bluetooth.BluetoothSocket;
-import android.os.Handler;
 import android.util.Log;
 
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class ConnectedThread extends Thread {
         mmOutStream = tmpOut;
     }
 
-    public String getValueRead(){
+    public String getValueRead() {
         return valueRead;
     }
 
@@ -64,7 +63,7 @@ public class ConnectedThread extends Thread {
                     readMessage = new String(buffer, 0, bytes);
                     Log.e(TAG, readMessage);
                     //Value to be read by the Observer streamed by the Obervable
-                    valueRead=readMessage;
+                    valueRead = readMessage;
                     bytes = 0;
                     numberOfReadings++;
                 } else {
