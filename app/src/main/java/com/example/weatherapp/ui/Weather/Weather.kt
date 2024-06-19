@@ -17,8 +17,8 @@ import kotlin.math.roundToInt
 
 class Weather : AppCompatActivity() {
 
-    val CITY: String = "Краснодар"
-    val API: String = "d85e2700e34ea495c13c698c65301c86"
+    val city: String = "Краснодар"
+    val apiKey: String = "d85e2700e34ea495c13c698c65301c86"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class Weather : AppCompatActivity() {
         override fun doInBackground(vararg params: String?): String? {
             var response: String?
             try {
-                response = URL("https://api.openweathermap.org/data/2.5/weather?q=$CITY&units=metric&appid=$API&lang=ru").readText(
+                response = URL("https://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&appid=$apiKey&lang=ru").readText(
                         Charsets.UTF_8
                 )
             } catch (e: Exception) {

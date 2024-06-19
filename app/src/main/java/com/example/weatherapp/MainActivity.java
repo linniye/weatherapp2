@@ -11,6 +11,10 @@ import com.example.weatherapp.ui.Monitor.MonitorFragment;
 public class MainActivity extends AppCompatActivity
         implements MonitorFragment.OnSettingsClickListener {
 
+    public static final String TAG = "linniye";
+    public static final MessageUpdater UPDATER = new MessageUpdater();
+    public static MessageReader READER;
+
     private ActivityMainBinding binding;
 
     @Override
