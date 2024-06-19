@@ -11,13 +11,14 @@ import com.example.weatherapp.R
 import org.json.JSONObject
 import java.net.URL
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import kotlin.math.roundToInt
 
 class Weather : AppCompatActivity() {
 
-    val CITY: String = "Краснодар"
-    val API: String = "d85e2700e34ea495c13c698c65301c86"
+    val city: String = "Краснодар"
+    val apiKey: String = "d85e2700e34ea495c13c698c65301c86"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +37,12 @@ class Weather : AppCompatActivity() {
         }
 
         override fun doInBackground(vararg params: String?): String? {
-            var response:String?
-            try{
-                response = URL("https://api.openweathermap.org/data/2.5/weather?q=$CITY&units=metric&appid=$API&lang=ru").readText(
-                    Charsets.UTF_8
+            var response: String?
+            try {
+                response = URL("https://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&appid=$apiKey&lang=ru").readText(
+                        Charsets.UTF_8
                 )
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 response = null
             }
             return response
@@ -56,8 +57,8 @@ class Weather : AppCompatActivity() {
                 val wind = jsonObj.getJSONObject("wind")
                 val weather = jsonObj.getJSONArray("weather").getJSONObject(0)
 
-                val updatedAt:Long = jsonObj.getLong("dt")
-                val updatedAtText = "Обновлено в: "+ SimpleDateFormat("dd/MM/yyyy hh:mm ",Locale("ru")).format(Date(updatedAt*1000))
+                val updatedAt: Long = jsonObj.getLong("dt")
+                val updatedAtText = "Обновлено в: " + SimpleDateFormat("dd/MM/yyyy hh:mm ", Locale("ru")).format(Date(updatedAt * 1000))
                 val temp = main.getString("temp").toFloat().roundToInt().toString() + "°C"
                 val tempMin = "Минимально: " + main.getString("temp_min").toFloat().roundToInt().toString() + "°C"
                 val tempMax = "Максимально:" + main.getString("temp_max").toFloat().roundToInt().toString() + "°C"
@@ -65,8 +66,8 @@ class Weather : AppCompatActivity() {
                 val humidity = main.getString("humidity").toFloat().roundToInt().toString() + " %"
 
 
-                val sunrise:Long = sys.getLong("sunrise")
-                val sunset:Long = sys.getLong("sunset")
+                val sunrise: Long = sys.getLong("sunrise")
+                val sunset: Long = sys.getLong("sunset")
                 val windSpeed = wind.getString("speed") + " м/с"
                 val weatherDescription = weather.getString("description")
 
@@ -74,17 +75,17 @@ class Weather : AppCompatActivity() {
                 val url = "https://api.openweathermap.org/data/2.5/weather?q=your_city&appid=your_api_key&lang=$lang"
 
 
-                val address = jsonObj.getString("name")+", "+sys.getString("country")
+                val address = jsonObj.getString("name") + ", " + sys.getString("country")
 
                 /* Populating extracted data into our views */
                 findViewById<TextView>(R.id.address).text = address
-                findViewById<TextView>(R.id.updated_at).text =  updatedAtText
+                findViewById<TextView>(R.id.updated_at).text = updatedAtText
                 findViewById<TextView>(R.id.status).text = weatherDescription.capitalize()
                 findViewById<TextView>(R.id.temp).text = temp
                 findViewById<TextView>(R.id.temp_min).text = tempMin
                 findViewById<TextView>(R.id.temp_max).text = tempMax
-                findViewById<TextView>(R.id.sunrise).text = SimpleDateFormat("hh:mm a", Locale("ru")).format(Date(sunrise*1000))
-                findViewById<TextView>(R.id.sunset).text = SimpleDateFormat("hh:mm a", Locale("ru")).format(Date(sunset*1000))
+                findViewById<TextView>(R.id.sunrise).text = SimpleDateFormat("hh:mm a", Locale("ru")).format(Date(sunrise * 1000))
+                findViewById<TextView>(R.id.sunset).text = SimpleDateFormat("hh:mm a", Locale("ru")).format(Date(sunset * 1000))
                 findViewById<TextView>(R.id.wind).text = "$windSpeed "
                 findViewById<TextView>(R.id.pressure).text = "$pressure  "
                 findViewById<TextView>(R.id.humidity).text = "$humidity "

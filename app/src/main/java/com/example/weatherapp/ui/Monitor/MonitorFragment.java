@@ -1,36 +1,23 @@
 package com.example.weatherapp.ui.Monitor;
 
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.weatherapp.MainActivity;
+import com.example.weatherapp.MessageCallback;
+import com.example.weatherapp.MessageUpdater;
 import com.example.weatherapp.R;
-import com.example.weatherapp.Settings;
+import com.example.weatherapp.UpdaterType;
 import com.example.weatherapp.ui.Weather.Weather;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.github.mikephil.charting.charts.LineChart;
@@ -38,20 +25,14 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class MonitorFragment extends Fragment {
 
     private ImageButton imageButton2;
     private ImageButton imageButton3;
-    public static Handler handler;
-    private final static int ERROR_READ = 0; // used in bluetooth handler to identify message update
+
     int[] time = {9, 11, 13, 14, 15, 17, 18}; // Пример данных time
     int[] temperatures = {11, 14, 16, 13, 12, 11, 9}; // Пример данных температуры
     int[] humidities = {80, 77, 60, 65, 72, 75, 89}; // Пример данных влажности
@@ -60,6 +41,7 @@ public class MonitorFragment extends Fragment {
     public interface OnSettingsClickListener {
         void onSettingsClick();
     }
+
     private OnSettingsClickListener mListener;
 
     @Override
@@ -76,35 +58,36 @@ public class MonitorFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        MessageUpdater updater = MainActivity.UPDATER;
+
         View view = inflater.inflate(R.layout.fragment_monitor, container, false);
-        View gauge1 = view.findViewById(R.id.gauge1);
-        View gauge2 = view.findViewById(R.id.gauge2);
-        View gauge3 = view.findViewById(R.id.gauge3);
         LineChart lineChart = view.findViewById(R.id.brain_chart3);
         LineChart lineChart2 = view.findViewById(R.id.brain_chart4);
         imageButton2 = view.findViewById(R.id.imageButton2);
         imageButton3 = view.findViewById(R.id.imageButton3);
 
-        imageButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onSettingsClick();
-            }
-        });
-        imageButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Weather.class);
-                startActivity(intent);
+        imageButton2.setOnClickListener(v -> mListener.onSettingsClick());
+        imageButton3.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Weather.class);
+            startActivity(intent);
 
-            }
         });
+
         ArcProgress arcProgress1 = view.findViewById(R.id.gauge1); // Получаем ссылку на второй виджет ArcProgress
         arcProgress1.setProgress(30);
+        updater.addCallback(UpdaterType.TEMPERATURE, new MessageCallback(arcProgress1, (object, value) -> {
+            arcProgress1.setProgress((float) value.get(0));
+        }));
         ArcProgress arcProgress2 = view.findViewById(R.id.gauge2); // Получаем ссылку на второй виджет ArcProgress
-            arcProgress2.setProgress(30); // Устанавливаем значение 75 для второго виджета ArcProgress
-            ArcProgress arcProgress3 = view.findViewById(R.id.gauge3); // Получаем ссылку на второй виджет ArcProgress
-            arcProgress3.setProgress(414); // Устанавливаем значение 75 для второго виджета ArcProgress
+        arcProgress1.setProgress(30);
+        updater.addCallback(UpdaterType.HUMIDITY, new MessageCallback(arcProgress2, (object, value) -> {
+            arcProgress2.setProgress((float) value.get(0));
+        }));
+        ArcProgress arcProgress3 = view.findViewById(R.id.gauge3); // Получаем ссылку на второй виджет ArcProgress
+        arcProgress1.setProgress(414);
+        updater.addCallback(UpdaterType.PPM, new MessageCallback(arcProgress3, (object, value) -> {
+            arcProgress3.setProgress((float) value.get(0));
+        }));
 
         // Настройка lineChart
         lineChart.setTouchEnabled(true);
@@ -133,6 +116,16 @@ public class MonitorFragment extends Fragment {
         LineData ppmLineData = new LineData(ppmDataSet);
         lineChart.setData(ppmLineData); // Установка LineData для lineChart
         lineChart.invalidate();
+
+        updater.addCallback(UpdaterType.PPM, new MessageCallback(lineChart, (object, value) -> {
+            List<Entry> entries = new ArrayList<>();
+            for (int i = 0; i < value.size(); i++) {
+                entries.add(new Entry((float) (i + 1), (float) value.get(i)));
+            }
+            ppmDataSet.setValues(entries);
+            lineChart.setData(new LineData(ppmDataSet));
+            lineChart.invalidate();
+        }));
 
 // Настройка lineChart2
         lineChart2.setTouchEnabled(true);
@@ -176,6 +169,24 @@ public class MonitorFragment extends Fragment {
         lineChart2.setData(lineData); // Установка LineData для lineChart2
         lineChart2.invalidate();
 
+        updater.addCallback(UpdaterType.TEMPERATURE, new MessageCallback(lineChart2, (object, value) -> {
+            List<Entry> entries = new ArrayList<>();
+            for (int i = 0; i < value.size(); i++) {
+                entries.add(new Entry((float) (i + 1), (float) value.get(i)));
+            }
+            ppmDataSet.setValues(entries);
+            lineChart2.setData(new LineData(ppmDataSet));
+        }));
+        updater.addCallback(UpdaterType.HUMIDITY, new MessageCallback(lineChart2, (object, value) -> {
+            List<Entry> entries = new ArrayList<>();
+            for (int i = 0; i < value.size(); i++) {
+                entries.add(new Entry((float) (i + 1), (float) value.get(i)));
+            }
+            ppmDataSet.setValues(entries);
+            lineChart2.setData(new LineData(ppmDataSet));
+            lineChart2.invalidate();
+        }));
+
         int sum = 0;
         for (int temperature : temperatures) {
             sum += temperature;
@@ -187,14 +198,16 @@ public class MonitorFragment extends Fragment {
         int sumhum = 0;
         for (int humidity : humidities) {
             sumhum += humidity;
-        } double averageHumidity = (double) sumhum / humidities.length;
+        }
+        double averageHumidity = (double) sumhum / humidities.length;
         TextView sensor2 = view.findViewById(R.id.sensor2);
         sensor2.setText(String.format("%.0f" + "%%", averageHumidity));
 
         int sumppm = 0;
         for (int ppms : ppm) {
             sumppm += ppms;
-        } double averagePpm = (double) sumppm / ppm.length;
+        }
+        double averagePpm = (double) sumppm / ppm.length;
         TextView sensor3 = view.findViewById(R.id.sensor3);
         sensor3.setText(String.format("%.0f PPM", averagePpm));
 
@@ -202,4 +215,4 @@ public class MonitorFragment extends Fragment {
 
     }
 
-    }
+}

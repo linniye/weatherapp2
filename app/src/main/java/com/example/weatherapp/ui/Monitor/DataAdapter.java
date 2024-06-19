@@ -15,9 +15,9 @@ public class DataAdapter extends BaseAdapter {
     private int[] temperatures;
     private int[] humidities;
     private int[] ppm;
-    private int[]  time;
+    private int[] time;
 
-    public DataAdapter(Context context, int[] temperatures, int[] humidities, int[] ppm, int [] time) {
+    public DataAdapter(Context context, int[] temperatures, int[] humidities, int[] ppm, int[] time) {
         this.context = context;
         this.temperatures = temperatures;
         this.humidities = humidities;
@@ -58,4 +58,4 @@ public class DataAdapter extends BaseAdapter {
 
         return convertView;
     }
-    }
+}
